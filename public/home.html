@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Exercise Table</title>
+</head>
+<body>
+    <h1>Eric's Workout Database</h1>
+<form id="exercise-form" class="post">
+    <label for="name-input">Name:</label>
+        <input type="text" id="name-input" placeholder="Name"/>
+    <label for="reps-input">Reps:</label>
+        <input type="number" id="reps-input" placeholder="# Reps"/>
+    <label for="weight-input">Weight:</label>
+        <input type="number" id="weight-input" placeholder="Weight"/>
+    <label for="lbs">lbs</label>
+        <input type="radio" id="lbs" name="units" value="lbs"/>
+    <label for="kg">kg</label>
+        <input type="radio" id="kg" name="units" value="kg"/>
+    <input type="date" id="date-input" name="date"/>
+    <button type="submit" id="add-exercise">Submit</button>
+</form>
+<br>
+<table>
+    <caption>Finished Exercise Log</caption>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Reps</th>
+            <th>Weight</th>
+            <th>Date (M/D/Y)</th>
+            <th>Unit</th>     
+        </tr>
+    </thead>
+    <tbody id="exercise-table"></tbody>
+</table>
+    <script src="scripts.js" defer></script>
+</body>
+</html>
+
