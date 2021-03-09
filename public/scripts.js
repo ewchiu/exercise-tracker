@@ -76,25 +76,45 @@ const makeTable = (info) => {
         let nextRow = document.createElement('tr');
 
         let dispName = document.createElement('td');
-        dispName.textContent = row['name'];
+        let nameForm = document.createElement('input')
+        nameForm.type = 'text';
+        nameForm.value = row['name'];
+        nameForm.disabled = true;
+        dispName.appendChild(nameForm);
         nextRow.appendChild(dispName);
 
         let dispReps = document.createElement('td');
-        dispReps.textContent = row['reps'];
+        let repsForm = document.createElement('input');
+        repsForm.type = 'number';
+        repsForm.value = row['reps']
+        repsForm.disabled = true;
+        dispReps.appendChild(repsForm);
         nextRow.appendChild(dispReps);
 
         let dispWeight = document.createElement('td');
-        dispWeight.textContent = row['weight'];
+        let weightForm = document.createElement('input');
+        weightForm.type = 'number';
+        weightForm.value = row['weight'];
+        weightForm.disabled = true;
+        dispWeight.appendChild(weightForm);
         nextRow.appendChild(dispWeight);
 
         let dispDate = document.createElement('td');
+        let dateForm = document.createElement('input');
+        dateForm.type = 'text';
         let date = row['date'].slice(5, 10);
         let year = row['date'].slice(0, 4);
-        dispDate.textContent = date + '-' + year;
+        dateForm.value = date + '-' + year;
+        dateForm.disabled = true; 
+        dispDate.appendChild(dateForm);
         nextRow.appendChild(dispDate);
 
         let dispUnits = document.createElement('td');
-        dispUnits.textContent = row['units'];
+        let unitsForm = document.createElement('input');
+        unitsForm.type = 'text';
+        unitsForm.value = row['units'];
+        unitsForm.disabled = true;
+        dispUnits.appendChild(unitsForm);
         nextRow.appendChild(dispUnits);
 
         // adding update form and button to row
@@ -128,34 +148,52 @@ const makeTable = (info) => {
 // function to handle update button
 const updateRow = (updateButton) => {
     
-    let req = new XMLHttpRequest();
     const rowId = updateButton.id;
     updateButton.disabled = true;
-    
-    let context = {};
-    context.id = rowId;
     let row = updateButton.parentElement.parentElement.parentElement;
-    let editCells = row.querySelectorAll('td');
+    console.log(row);
+    
+    for (let i = 0; i < row.cells.length; i++) {
+        row.cells[i].childNodes[0].disabled = false;
+    }
+    
+    row.cells[0].firstChild.id = 'name-update';
+    row.cells[1].firstChild.id = 'reps-update';
+    row.cells[2].firstChild.id = 'weight-update';
+    row.cells[3].firstChild.type = 'date';
+    row.cells[3].firstChild.id = 'date-update';
+    row.cells[4].firstChild.id = 'units-update';
 
     const submitButton = document.createElement('input');
     submitButton.type = 'button';
     submitButton.value = 'Submit Updates';
     submitButton.addEventListener('click', (event) => {
-        let submitButton = event.currentTarget;
-        
-    })
-    row.appendChild(submitButton);
+        let req = new XMLHttpRequest();
+        let context = {}
 
-    // let updateName = document.createElement('input');
-    // updateName.type = 'text';
+        // retrieve values submitted in HTML form
+        context.name = document.getElementById('name-update').value;
+        context.reps = document.getElementById('reps-update').value;
+        context.weight = document.getElementById('weight-update').value;
+        context.date = document.getElementById('date-update').value;
+        context.units = document.getElementById('units-update').value;
+        context.id = rowId;
 
-    // let updateReps = document.createElement('input');
-    // let updateWeight = document.createElement('input');
-    // let updateDate = document.createElement('input');
-    // let updateUnits = document.createElement('input');
+        req.open("PUT", baseUrl, true);
+        req.setRequestHeader('Content-Type', 'application/json');
+        req.addEventListener('load', () => {
+            if (req.status >= 200 && req.status < 400) {
+                getData();
+            } else {
+                console.log("Error when trying to make request: " + req.statusText);
+            }
+        });
 
+        req.send(JSON.stringify(context));
+        event.preventDefault();
+        })
     
-
+    row.appendChild(submitButton);
 }
 
 // function to handle delete button

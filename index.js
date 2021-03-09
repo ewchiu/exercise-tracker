@@ -23,7 +23,7 @@ app.use(express.json());
 const tableName = "exercises"
 const getAllQuery = `SELECT * FROM ${tableName};`
 const insertQuery = 'INSERT INTO exercises (name, reps, weight, units, date) VALUES ('
-const updateQuery = `UPDATE ${tableName} SET name=?, rep=?, weight=?, date=?, units=? WHERE id=? `
+const updateQuery = `UPDATE ${tableName} SET name=`
 const deleteQuery = `DELETE FROM ${tableName} WHERE ${tableName}.id=`
 const deleteTableQuery = `DROP TABLE IF EXISTS ${tableName}`
 const createTableQuery = `CREATE TABLE ${tableName}(
@@ -57,8 +57,8 @@ app.get('/', (req, res) => {
 
 // Insert new exercise
 app.post('/', (req, res) => {
-    let inputValues = "'" + req.body.name + "'," + req.body.reps + "," + req.body.weight + ",'" + req.body.units + "','" + req.body.date + "'";
-    pool.query(insertQuery + inputValues + ");", (err, rows) => {
+    let inputValues = "'" + req.body.name + "'," + req.body.reps + "," + req.body.weight + ",'" + req.body.units + "','" + req.body.date + "');"
+    pool.query(insertQuery + inputValues, (err, rows) => {
         if (err) {
             console.log(err);
             return;
@@ -67,16 +67,19 @@ app.post('/', (req, res) => {
     })
 })
 
+// Update exercise
 app.put('/', (req, res) => {
-    pool.query(updateQuery, [req.query.name, req.query.reps, req.query.weight, req.query.date, req.query.units, req.query.id], (err) => {
+    let inputValues = updateQuery + "'" + req.body.name + "', reps=" + req.body.reps + ", weight=" + req.body.weight + ", units='" + req.body.units + "', date='" + req.body.date + "' WHERE id=" + req.body.id;
+    pool.query(inputValues, (err, row) => {
         if (err) {
             console.log(err);
             return;
         }
-        res.send('home');
+        res.send(JSON.stringify(row));
     })
 })
 
+// delete exercise
 app.delete('/', (req, res, next) => {
     pool.query(deleteQuery + req.body.id, function(err, rows) {
         if (err) {
